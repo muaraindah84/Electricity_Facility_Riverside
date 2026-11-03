@@ -145,32 +145,36 @@
         const SCRIPT_URL = "URL_WEB_APP_GAS_LU_DISINI"; // Ganti dengan URL deployment GAS lu
 
         // 1. Aksi Check-In / Start
+        // 1. Aksi Check-In / Start (Berbasis ID Station Charging)
         async function handleCheckIn(event) {
             event.preventDefault();
-            const token = document.getElementById('tokenInput').value.trim();
+            const stationId = document.getElementById('tokenInput').value.trim(); // Ini ID Station Charging
             const btn = document.getElementById('btnCheckIn');
 
             btn.disabled = true;
-            btn.innerText = "Memeriksa Unit...";
+            btn.innerText = "Memeriksa Station...";
 
-            // --- NANTI DI-FETCH KE GAS ---
-            // Contoh simulasi sukses mengambil angka akhir transaksi sebelumnya sebagai awal:
+            // --- NANTI DI-FETCH KE GAS BERDASARKAN ID STATION ---
+            // Contoh payload yang dikirim ke GAS untuk cek data terakhir station ini:
+            // payload: { action: "checkStation", stationId: stationId }
+            
             setTimeout(() => {
-                activeSessionData.token = token;
-                activeSessionData.angkaAwal = 1450.5; // Contoh hasil dari database (transaksi akhir sblmnya)
+                activeSessionData.stationId = stationId;
+                activeSessionData.angkaAwal = 1450.5; // Otomatis dari angka kWh akhir transaksi sebelumnya di station ini
                 activeSessionData.waktuMulai = new Date().toLocaleTimeString();
 
                 // Ubah tampilan ke View Check-In Berhasil / Active Session
                 document.getElementById('viewCheckIn').classList.add('hidden');
                 document.getElementById('viewActiveSession').classList.remove('hidden');
                 
-                document.getElementById('displayToken').innerText = token;
+                // Update teks UI biar jelas kalau ini merujuk ke Station
+                document.getElementById('displayToken').innerText = "Station " + stationId;
                 document.getElementById('displayAngkaAwal').innerText = activeSessionData.angkaAwal + " kWh";
                 document.getElementById('displayWaktuMulai').innerText = activeSessionData.waktuMulai;
                 
                 btn.disabled = false;
-                btn.innerText = "Cek Unit & Mulai Sesi 🚀";
-                showAlert("Check-in berhasil! Unit siap digunakan.", "success");
+                btn.innerText = "Cek Station & Mulai Sesi 🚀";
+                showAlert("Check-in Station berhasil! Angka awal ditarik otomatis.", "success");
             }, 800);
         }
 
