@@ -40,41 +40,40 @@
         
         <div class="bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
             
-            <!-- Aksen Glow Background -->
             <div class="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-            <!-- TAMPILAN 1: FORM CHECK-IN AWAL -->
+            <!-- TAMPILAN 1: FORM CHECK-IN / INPUT STATION ID -->
             <div id="viewCheckIn" class="fade-in space-y-5">
                 <div class="space-y-1">
                     <span class="text-xs font-semibold text-emerald-400 tracking-wider uppercase">Langkah 1 dari 2</span>
-                    <h2 class="text-xl font-bold text-white">Mulai Sesi Pengecasan</h2>
-                    <p class="text-xs text-slate-400">Masukkan ID Unit atau Token akses Anda untuk memulai pencatatan otomatis.</p>
+                    <h2 class="text-xl font-bold text-white">Scan / Input Station Charging</h2>
+                    <p class="text-xs text-slate-400">Masukkan ID Station (contoh: STATION-01) untuk memulai atau melanjutkan sesi.</p>
                 </div>
 
                 <form onsubmit="handleCheckIn(event)" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">ID Unit / Token Akses</label>
-                        <input type="text" id="tokenInput" required placeholder="Contoh: EV-PLUIT-01" 
-                            class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all">
+                        <label class="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">ID Station Charging</label>
+                        <input type="text" id="stationInput" required placeholder="Contoh: STATION-01" 
+                            class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all uppercase">
                     </div>
 
                     <button type="submit" id="btnCheckIn" class="w-full bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-300 hover:to-teal-400 text-slate-950 font-bold py-3.5 px-4 rounded-2xl shadow-lg shadow-emerald-500/20 transition-all transform active:scale-[0.98] text-sm">
-                        Cek Unit & Mulai Sesi 🚀
+                        Cek Status Station 🚀
                     </button>
                 </form>
             </div>
 
-            <!-- TAMPILAN 2: STATUS AKTIF / CHECK-IN BERHASIL & CHECKOUT -->
+            <!-- TAMPILAN 2: STATUS AKTIF / CHECK-IN BERHASIL -->
             <div id="viewActiveSession" class="hidden fade-in space-y-5">
                 <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-4 text-center space-y-1.5">
                     <div class="text-2xl mb-1">🎉</div>
-                    <h3 class="font-bold text-emerald-400 text-sm">Check-in Berhasil!</h3>
-                    <p class="text-xs text-slate-300">Unit <span id="displayToken" class="font-bold text-white underline"></span> sedang aktif digunakan.</p>
+                    <h3 class="font-bold text-emerald-400 text-sm" id="activeTitle">Sesi Sedang Aktif</h3>
+                    <p class="text-xs text-slate-300"><span id="displayStation" class="font-bold text-white underline"></span> terdeteksi aktif.</p>
                 </div>
 
                 <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-4 space-y-3 text-xs">
                     <div class="flex justify-between text-slate-400">
-                        <span>Angka kWh Awal (Otomatis):</span>
+                        <span>Angka kWh Awal:</span>
                         <span id="displayAngkaAwal" class="font-bold text-emerald-400 text-sm">0.0</span>
                     </div>
                     <div class="flex justify-between text-slate-400">
@@ -83,13 +82,12 @@
                     </div>
                 </div>
 
-                <!-- Tombol Checkout/Selesai Utama -->
                 <button type="button" onclick="showCheckoutForm()" class="w-full bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-slate-950 font-bold py-3.5 px-4 rounded-2xl shadow-lg shadow-amber-500/20 transition-all transform active:scale-[0.98] text-sm">
-                    Selesai / Checkout Sesi 🏁
+                    Lanjut Checkout / Selesai 🏁
                 </button>
             </div>
 
-            <!-- TAMPILAN 3: FORM LAPORAN AKHIR (MUNCUL SETELAH KLIK CHECKOUT) -->
+            <!-- TAMPILAN 3: FORM LAPORAN AKHIR (CHECKOUT) -->
             <div id="viewCheckoutForm" class="hidden fade-in space-y-5">
                 <div class="space-y-1">
                     <span class="text-xs font-semibold text-amber-400 tracking-wider uppercase">Langkah 2 dari 2</span>
@@ -98,14 +96,12 @@
                 </div>
 
                 <form onsubmit="handleFinish(event)" class="space-y-4">
-                    <!-- Angka kWh Meter Akhir -->
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">Angka kWh Meter Akhir</label>
                         <input type="number" step="0.1" id="angkaAkhir" required placeholder="Contoh: 1548.2" 
                             class="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 transition-all">
                     </div>
 
-                    <!-- Upload Foto kWh Akhir -->
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">Foto Bukti kWh Akhir</label>
                         <div class="relative border-2 border-dashed border-slate-700 hover:border-amber-500 rounded-2xl p-4 text-center cursor-pointer transition-colors bg-slate-950">
@@ -122,7 +118,31 @@
                 </form>
             </div>
 
-            <!-- Alert Box / Status Notifikasi -->
+            <!-- Form Check-in Baru (Jika Station masih Available dan mau mulai sesi baru) -->
+            <div id="viewNewCheckinForm" class="hidden fade-in space-y-5">
+                <div class="bg-sky-500/10 border border-sky-500/20 rounded-2xl p-4 text-center space-y-1.5">
+                    <div class="text-2xl mb-1">🔌</div>
+                    <h3 class="font-bold text-sky-400 text-sm">Station Tersedia</h3>
+                    <p class="text-xs text-slate-300">Station <span id="availableStationId" class="font-bold text-white underline"></span> siap digunakan untuk sesi baru.</p>
+                </div>
+
+                <form onsubmit="handleNewCheckIn(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">Upload Foto kWh Awal</label>
+                        <div class="relative border-2 border-dashed border-slate-700 hover:border-sky-500 rounded-2xl p-4 text-center cursor-pointer transition-colors bg-slate-950">
+                            <input type="file" id="fotoAwal" accept="image/*" required onchange="previewStartFile(this)" class="absolute inset-0 opacity-0 cursor-pointer">
+                            <div id="fileStartLabel" class="text-xs text-slate-400">
+                                📸 <span class="text-sky-400 font-medium">Klik untuk upload foto awal</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btnStartSession" class="w-full bg-gradient-to-r from-sky-400 to-blue-500 hover:from-sky-300 hover:to-blue-400 text-slate-950 font-bold py-3.5 px-4 rounded-2xl shadow-lg shadow-sky-500/20 transition-all transform active:scale-[0.98] text-sm">
+                        Mulai Sesi Pengecasan 🚀
+                    </button>
+                </form>
+            </div>
+
             <div id="alertBox" class="hidden mt-4 p-3.5 rounded-2xl text-xs font-medium text-center transition-all"></div>
 
         </div>
@@ -135,65 +155,122 @@
 
     <!-- JavaScript Logic -->
     <script>
-        // Simulasi data session sementara di browser (Nanti di-link ke respons API Google Apps Script)
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwhfo6WReze71vRmLBAspQd4FBq6PvKdaENUsagKrbuXoAOazOjc9dxObZ2ZjfIPbHp/exec";
+        
+        let currentStationId = '';
         let activeSessionData = {
-            token: '',
-            angkaAwal: 0,
-            waktuMulai: ''
+            angkaAwal: 0
         };
 
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwhfo6WReze71vRmLBAspQd4FBq6PvKdaENUsagKrbuXoAOazOjc9dxObZ2ZjfIPbHp/exec"; // Ganti dengan URL deployment GAS lu
-
-        // 1. Aksi Check-In / Start
-        // 1. Aksi Check-In / Start (Berbasis ID Station Charging)
+        // 1. Cek Status Station saat ID dimasukkan
         async function handleCheckIn(event) {
             event.preventDefault();
-            const stationId = document.getElementById('tokenInput').value.trim(); // Ini ID Station Charging
+            const stationId = document.getElementById('stationInput').value.trim().toUpperCase();
             const btn = document.getElementById('btnCheckIn');
 
+            currentStationId = stationId;
             btn.disabled = true;
-            btn.innerText = "Memeriksa Station...";
+            btn.innerText = "Memeriksa Server...";
+            hideAlert();
 
-            // --- NANTI DI-FETCH KE GAS BERDASARKAN ID STATION ---
-            // Contoh payload yang dikirim ke GAS untuk cek data terakhir station ini:
-            // payload: { action: "checkStation", stationId: stationId }
-            
-            setTimeout(() => {
-                activeSessionData.stationId = stationId;
-                activeSessionData.angkaAwal = 1450.5; // Otomatis dari angka kWh akhir transaksi sebelumnya di station ini
-                activeSessionData.waktuMulai = new Date().toLocaleTimeString();
+            try {
+                // Request GET ke Google Apps Script untuk cek status station
+                const response = await fetch(`${SCRIPT_URL}?stationId=${stationId}`);
+                const result = await response.json();
 
-                // Ubah tampilan ke View Check-In Berhasil / Active Session
-                document.getElementById('viewCheckIn').classList.add('hidden');
-                document.getElementById('viewActiveSession').classList.remove('hidden');
-                
-                // Update teks UI biar jelas kalau ini merujuk ke Station
-                document.getElementById('displayToken').innerText = "Station " + stationId;
-                document.getElementById('displayAngkaAwal').innerText = activeSessionData.angkaAwal + " kWh";
-                document.getElementById('displayWaktuMulai').innerText = activeSessionData.waktuMulai;
-                
+                if (result.status === "ACTIVE_SESSION") {
+                    // Jika station sedang dipakai (Sesi nyangkut / mau checkout)
+                    activeSessionData.angkaAwal = result.angkaAwal;
+                    document.getElementById('displayStation').innerText = stationId;
+                    document.getElementById('displayAngkaAwal').innerText = result.angkaAwal + " kWh";
+                    document.getElementById('displayWaktuMulai').innerText = new Date(result.waktuMulai).toLocaleTimeString();
+                    
+                    document.getElementById('viewCheckIn').classList.add('hidden');
+                    document.getElementById('viewActiveSession').classList.remove('hidden');
+                } else {
+                    // Jika station kosong (Available) -> Lanjut ke form upload foto awal start
+                    document.getElementById('availableStationId').innerText = stationId;
+                    document.getElementById('viewCheckIn').classList.add('hidden');
+                    document.getElementById('viewNewCheckinForm').classList.remove('hidden');
+                }
+            } catch (error) {
+                showAlert("Gagal terhubung ke server Google. Periksa koneksi.", "error");
+            } finally {
                 btn.disabled = false;
-                btn.innerText = "Cek Station & Mulai Sesi 🚀";
-                showAlert("Check-in Station berhasil! Angka awal ditarik otomatis.", "success");
-            }, 800);
-        }
-
-        // 2. Klik Tombol Checkout / Selesai
-        function showCheckoutForm() {
-            document.getElementById('viewActiveSession').classList.add('hidden');
-            document.getElementById('viewCheckoutForm').classList.remove('hidden');
-            document.getElementById('alertBox').classList.add('hidden');
-        }
-
-        // 3. Preview Nama File Foto
-        function previewFileName(input) {
-            const fileLabel = document.getElementById('fileLabel');
-            if (input.files && input.files[0]) {
-                fileLabel.innerHTML = `✅ File dipilih: <span class="text-amber-400 font-semibold">${input.files[0].name}</span>`;
+                btn.innerText = "Cek Status Station 🚀";
             }
         }
 
-        // 4. Aksi Submit Finish / Laporan Akhir
+        // 2. Eksekusi Check-In / Start Baru (Kirim Foto Awal + Station ID ke GAS)
+        async function handleNewCheckIn(event) {
+            event.preventDefault();
+            const fotoInput = document.getElementById('fotoAwal');
+            const btn = document.getElementById('btnStartSession');
+
+            if (fotoInput.files.length === 0) {
+                showAlert("Wajib upload foto bukti kWh awal!", "error");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Memproses Sesi Baru...";
+
+            const file = fotoInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = async function() {
+                const base64Data = reader.result.split(',')[1];
+                const payload = {
+                    action: "checkin",
+                    stationId: currentStationId,
+                    fotoName: file.name,
+                    fotoMime: file.type,
+                    fotoBase64: base64Data
+                };
+
+                try {
+                    const response = await fetch(SCRIPT_URL, {
+                        method: "POST",
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+
+                    if (result.status === "SUCCESS") {
+                        showAlert("Check-in berhasil! Sesi dimulai.", "success");
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        showAlert(result.message, "error");
+                        btn.disabled = false;
+                        btn.innerText = "Mulai Sesi Pengecasan 🚀";
+                    }
+                } catch (error) {
+                    showAlert("Gagal mengirim data ke server.", "error");
+                    btn.disabled = false;
+                    btn.innerText = "Mulai Sesi Pengecasan 🚀";
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function showCheckoutForm() {
+            document.getElementById('viewActiveSession').classList.add('hidden');
+            document.getElementById('viewCheckoutForm').classList.remove('hidden');
+            hideAlert();
+        }
+
+        function previewFileName(input) {
+            if (input.files && input.files[0]) {
+                document.getElementById('fileLabel').innerHTML = `✅ File dipilih: <span class="text-amber-400 font-semibold">${input.files[0].name}</span>`;
+            }
+        }
+
+        function previewStartFile(input) {
+            if (input.files && input.files[0]) {
+                document.getElementById('fileStartLabel').innerHTML = `✅ File dipilih: <span class="text-sky-400 font-semibold">${input.files[0].name}</span>`;
+            }
+        }
+
+        // 3. Eksekusi Checkout / Finish (Kirim Angka Akhir + Foto Akhir ke GAS)
         async function handleFinish(event) {
             event.preventDefault();
             const angkaAkhir = parseFloat(document.getElementById('angkaAkhir').value);
@@ -201,7 +278,7 @@
             const btn = document.getElementById('btnFinish');
 
             if (angkaAkhir < activeSessionData.angkaAwal) {
-                showAlert("Angka kWh akhir tidak boleh lebih kecil dari angka awal!", "error");
+                showAlert(`Angka akhir (${angkaAkhir}) tidak boleh lebih kecil dari angka awal (${activeSessionData.angkaAwal})!`, "error");
                 return;
             }
 
@@ -211,55 +288,49 @@
             }
 
             btn.disabled = true;
-            btn.innerText = "Mengirim Data Laporan...";
+            btn.innerText = "Menyimpan Laporan...";
 
             const file = fotoInput.files[0];
             const reader = new FileReader();
 
             reader.onload = async function() {
                 const base64Data = reader.result.split(',')[1];
-                
                 const payload = {
                     action: "finish",
-                    token: activeSessionData.token,
-                    angkaAwal: activeSessionData.angkaAwal,
+                    stationId: currentStationId,
                     angkaAkhir: angkaAkhir,
                     fotoName: file.name,
                     fotoMime: file.type,
                     fotoBase64: base64Data
                 };
 
-                // --- INTEGRASI KE GOOGLE APPS SCRIPT ---
                 try {
-                    /* 
                     const response = await fetch(SCRIPT_URL, {
                         method: "POST",
                         body: JSON.stringify(payload)
                     });
                     const result = await response.json();
-                    */
 
-                    // Simulasi sukses:
-                    setTimeout(() => {
-                        showAlert("Laporan berhasil disimpan! Sesi ditutup. Terima kasih.", "success");
-                        setTimeout(() => {
-                            location.reload(); // Reset ke halaman awal
-                        }, 2000);
-                    }, 1000);
-
+                    if (result.status === "SUCCESS") {
+                        showAlert(result.message, "success");
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        showAlert(result.message, "error");
+                        btn.disabled = false;
+                        btn.innerText = "Kirim Laporan & Tutup Sesi 🔒";
+                    }
                 } catch (error) {
-                    showAlert("Gagal terhubung ke server. Coba lagi.", "error");
+                    showAlert("Gagal terhubung ke server.", "error");
                     btn.disabled = false;
                     btn.innerText = "Kirim Laporan & Tutup Sesi 🔒";
                 }
             };
-
             reader.readAsDataURL(file);
         }
 
         function showAlert(message, type) {
             const alertBox = document.getElementById('alertBox');
-            alertBox.classList.remove('hidden', 'bg-emerald-500/20', 'text-emerald-300', 'border', 'border-emerald-500/30', 'bg-rose-500/20', 'text-rose-300', 'border-rose-500/30');
+            alertBox.classList.remove('hidden', 'bg-emerald-500/20', 'text-emerald-300', 'border', 'border-emerald-500/30', 'bg-rose-500/20', 'text-rose-300', 'border-rose-500/30', 'bg-sky-500/20', 'text-sky-300', 'border-sky-500/30');
             
             if (type === 'success') {
                 alertBox.classList.add('bg-emerald-500/20', 'text-emerald-300', 'border', 'border-emerald-500/30');
@@ -267,6 +338,10 @@
                 alertBox.classList.add('bg-rose-500/20', 'text-rose-300', 'border', 'border-rose-500/30');
             }
             alertBox.innerText = message;
+        }
+
+        function hideAlert() {
+            document.getElementById('alertBox').classList.add('hidden');
         }
     </script>
 </body>
