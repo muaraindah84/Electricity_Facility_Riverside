@@ -69,7 +69,7 @@
             }
         }
 
-        function renderStations(sessions) {
+function renderStations(sessions) {
             const container = document.getElementById('stationListContainer');
             document.getElementById('activeCount').innerText = `${sessions.length} Station Aktif`;
 
@@ -108,8 +108,9 @@
                     timeStr = `Sisa: ${h > 0 ? h + 'j ' : ''}${m}m`;
                 }
 
-                // Format WhatsApp Link (SKENARIO 4: Sediakan fitur send remind via WA saja)
-                let cleanWa = item.waWarga.replace(/[^0-9]/g, '');
+                // Amankan format WhatsApp agar selalu terbaca sebagai teks
+                let rawWa = item.waWarga ? String(item.waWarga) : '';
+                let cleanWa = rawWa.replace(/[^0-9]/g, '');
                 if (cleanWa.startsWith('0')) cleanWa = '62' + cleanWa.slice(1);
                 const waMessage = encodeURIComponent(`Halo Bpk/Ibu Unit ${item.token} (${item.namaWarga}), sesi EV Charging Anda di Station ${item.station} ${isOvertime ? 'sudah melewati batas waktu' : 'mendekati waktu selesai'}. Mohon segera lakukan Checkout jika sudah selesai. Terima kasih.`);
                 const waLink = cleanWa ? `https://wa.me/${cleanWa}?text=${waMessage}` : `#`;
@@ -137,7 +138,7 @@
 
                         <!-- Action Reminder Button (WA Only) -->
                         <div class="pt-2 border-t border-slate-700/60">
-                            <a href="${waLink}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs py-2.5 px-3 rounded-xl text-center transition-all flex items-center justify-center gap-1.5 shadow ${!item.waWarga ? 'opacity-50 pointer-events-none' : ''}">
+                            <a href="${waLink}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs py-2.5 px-3 rounded-xl text-center transition-all flex items-center justify-center gap-1.5 shadow ${!cleanWa ? 'opacity-50 pointer-events-none' : ''}">
                                 💬 Kirim Reminder via WhatsApp
                             </a>
                         </div>
