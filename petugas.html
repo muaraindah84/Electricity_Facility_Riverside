@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COMMAND CENTER - Petugas EV Charge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col p-4 max-w-4xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <header class="bg-slate-800 border border-slate-700 p-4 rounded-2xl flex items-center justify-between shadow-xl">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xl border border-emerald-500/30">⚡</div>
+            <div>
+                <h1 class="font-bold text-sm tracking-wide text-white">COMMAND CENTER PETUGAS</h1>
+                <p class="text-xs text-slate-400">Monitoring Sesi Aktif EV Charging • Real-time</p>
+            </div>
+        </div>
+        <button onclick="loadAdminData()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-xl shadow transition-all active:scale-95 flex items-center gap-1.5">
+            🔄 Refresh Data
+        </button>
+    </header>
+
+    <!-- Content Container -->
+    <main class="flex-1 space-y-4">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Daftar Station Sedang Digunakan</h2>
+            <span id="activeCount" class="bg-emerald-500/10 text-emerald-400 text-xs px-2.5 py-1 rounded-lg border border-emerald-500/20 font-bold">0 Station Aktif</span>
+        </div>
+
+        <div id="stationListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-slate-800/50 border border-slate-700/60 p-6 rounded-2xl text-center text-slate-400 col-span-full">
+                ⏳ Memuat data monitoring...
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const SCRIPT_URL = "URL_WEB_APP_GAS_LU_DISINI"; 
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadAdminData();
+            setInterval(loadAdminData, 10000); // Auto refresh tiap 10 detik
+        });
+
+        async function loadAdminData() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getAdminDashboard`);
+                const res = await response.json();
+
+                if (res.status === "SUCCESS_ADMIN") {
+                    renderStations(res.sessions);
+                }
+            } catch (err) {
+                console.error("Gagal memuat data admin");
+            }
+        }
+
+        function renderStations(sessions) {
+            const container = document.getElementById('stationListContainer');
+            document.getElementById('activeCount').innerText = `${sessions.length} Station Aktif`;
+
+            if (sessions.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-slate-800/50 border border-slate-700/60 p-8 rounded-2xl text-center text-slate-400 col-span-full space-y-2">
+                        <span class="text-3xl">☕</span>
+                        <p class="text-xs">Semua Station sedang kosong atau tidak ada sesi aktif saat ini.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            const now = new Date().getTime();
+
+            sessions.forEach(item => {
+                const startTime = item.timestampMs;
+                const durationMs = item.durasiMenit * 60 * 1000;
+                const targetTime = startTime + durationMs;
+                const timeLeft = targetTime - now;
+                
+                let progressPercent = ((durationMs - timeLeft) / durationMs) * 100;
+                if (progressPercent > 100) progressPercent = 100;
+                if (progressPercent < 0) progressPercent = 0;
+
+                const isOvertime = timeLeft <= 0;
+                let timeStr = "";
+                if (isOvertime) {
+                    const overSec = Math.abs(timeLeft) / 1000;
+                    const overMin = Math.floor(overSec / 60);
+                    timeStr = `<span class="text-red-400 font-bold animate-pulse">⚠️ Overtime +${overMin} Menit</span>`;
+                } else {
+                    const m = Math.floor((timeLeft / (1000 * 60)) % 60);
+                    const h = Math.floor(timeLeft / (1000 * 60 * 60));
+                    timeStr = `Sisa: ${h > 0 ? h + 'j ' : ''}${m}m`;
+                }
+
+                // Format WhatsApp Link (SKENARIO 4: Sediakan fitur send remind via WA saja)
+                let cleanWa = item.waWarga.replace(/[^0-9]/g, '');
+                if (cleanWa.startsWith('0')) cleanWa = '62' + cleanWa.slice(1);
+                const waMessage = encodeURIComponent(`Halo Bpk/Ibu Unit ${item.token} (${item.namaWarga}), sesi EV Charging Anda di Station ${item.station} ${isOvertime ? 'sudah melewati batas waktu' : 'mendekati waktu selesai'}. Mohon segera lakukan Checkout jika sudah selesai. Terima kasih.`);
+                const waLink = cleanWa ? `https://wa.me/${cleanWa}?text=${waMessage}` : `#`;
+
+                html += `
+                    <div class="bg-slate-800 border ${isOvertime ? 'border-red-500/50 bg-red-950/10' : 'border-slate-700'} p-5 rounded-2xl shadow-xl space-y-4 flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <span class="bg-emerald-500/20 text-emerald-400 font-bold text-xs px-2.5 py-1 rounded-lg border border-emerald-500/30">📍 Station ${item.station}</span>
+                                <span class="text-xs text-slate-300 font-bold">Unit: ${item.token} (${item.namaWarga})</span>
+                            </div>
+                            <span class="text-xs font-bold">${timeStr}</span>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between text-[11px] text-slate-400">
+                                <span>Mulai: ${item.timestamp}</span>
+                                <span>Durasi: ${item.durasiMenit} Menit</span>
+                            </div>
+                            <div class="w-full bg-slate-700 h-2.5 rounded-full overflow-hidden">
+                                <div class="h-full transition-all duration-500 ${isOvertime ? 'bg-red-500' : 'bg-emerald-500'}" style="width: ${progressPercent}%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Action Reminder Button (WA Only) -->
+                        <div class="pt-2 border-t border-slate-700/60">
+                            <a href="${waLink}" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold text-xs py-2.5 px-3 rounded-xl text-center transition-all flex items-center justify-center gap-1.5 shadow ${!item.waWarga ? 'opacity-50 pointer-events-none' : ''}">
+                                💬 Kirim Reminder via WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
