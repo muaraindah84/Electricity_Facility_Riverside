@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SOBARI EV CHARGE - Riverside Residence</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -19,11 +18,10 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950">
 
-    <!-- WhatsApp Professional Header with Direct Call/Chat Target Toggle -->
+    <!-- Header -->
     <header class="bg-[#005c4b] text-white py-2.5 px-4 sticky top-0 z-50 shadow-lg flex items-center justify-between border-b border-emerald-900/30">
         <div class="flex items-center space-x-3">
             <div class="relative">
-                <!-- Avatar Maskot / Logo Sobari EV Charge -->
                 <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center font-bold text-lg shadow-inner border border-emerald-400/40">⚡</div>
                 <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-[#005c4b] rounded-full animate-pulse"></span>
             </div>
@@ -39,7 +37,6 @@
             </div>
         </div>
 
-        <!-- Tombol / Toggle Call WhatsApp Target (Security / Teknisi / Admin) -->
         <a href="https://wa.me/6281234567890?text=Halo%20Admin%20Sobari,%20saya%20butuh%20bantuan%20darurat%20di%20Charging%20Station." 
            target="_blank" 
            title="Hubungi Petugas / Security"
@@ -50,29 +47,56 @@
         </a>
     </header>
 
-    <!-- Chat Room Container -->
+    <!-- Chat Container -->
     <main id="chatContainer" class="flex-1 wa-chat-bg p-4 flex flex-col justify-end max-w-md w-full mx-auto space-y-3 overflow-y-auto pb-24">
-        
-        <!-- Bubble Chat: Sapaan Bot Profesional -->
         <div class="flex items-end space-x-2 fade-in">
             <div class="w-7 h-7 rounded-full bg-emerald-700 flex items-center justify-center text-xs font-bold text-white mb-1 shadow">⚡</div>
             <div class="bg-[#202c33] text-slate-100 p-3.5 rounded-2xl rounded-bl-sm max-w-[88%] text-xs shadow space-y-2 border border-slate-700/50">
                 <p class="font-bold text-emerald-400 text-sm">Halo, Warga Riverside! 👋</p>
                 <p id="botGreetingText">Memeriksa status station...</p>
                 <div class="bg-black/20 p-2 rounded-lg border border-slate-700/30 text-[11px] text-slate-300">
-                    💡 <i>Tips: Pastikan foto meteran jelas (layar selain angka kWh sudah tertutup stiker pengaman).</i>
+                    💡 <i>Pastikan foto meteran jelas (layar selain angka kWh tertutup stiker).</i>
                 </div>
                 <span class="text-[10px] text-slate-400 block text-right" id="currentTime">21:23</span>
             </div>
         </div>
-
     </main>
 
-    <!-- WhatsApp Simulated Footer / Chat Input Bar -->
+    <!-- Floating Dashboard Toggle Button (Pojok Kanan Bawah) -->
+    <button onclick="openDashboardModal()" class="fixed bottom-20 right-4 z-40 bg-emerald-500 hover:bg-emerald-400 text-slate-950 p-3.5 rounded-full shadow-2xl flex items-center justify-center border-2 border-[#005c4b] transition-transform active:scale-95 group" title="Cek Rekap Pemakaian Unit">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 group-hover:rotate-12 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+    </button>
+
+    <!-- Modal Dashboard Rekap Unit -->
+    <div id="dashboardModal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#202c33] border border-slate-700 w-full max-w-md rounded-2xl p-5 text-slate-100 shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xl">📊</span>
+                    <h3 class="font-bold text-sm text-emerald-400">Dashboard Rekap Pemakaian Unit</h3>
+                </div>
+                <button onclick="closeDashboardModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">&times;</button>
+            </div>
+
+            <div class="flex space-x-2">
+                <input type="text" id="inputSearchUnit" placeholder="Masukkan No Unit / Token (Contoh: 2A)" 
+                    class="flex-1 bg-[#111b21] text-xs text-slate-100 px-3 py-2.5 rounded-lg border border-slate-700 focus:outline-none focus:border-emerald-500 uppercase">
+                <button onclick="fetchUnitHistory()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition-all">
+                    Cari
+                </button>
+            </div>
+
+            <div id="dashboardResult" class="flex-1 overflow-y-auto space-y-2 text-xs pr-1">
+                <p class="text-slate-400 text-center py-6">Ketik nomor unit atau token lalu klik 'Cari' untuk melihat riwayat pemakaian.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Input Bar -->
     <footer class="bg-[#202c33] py-2.5 px-3 border-t border-slate-800 fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto">
         <form id="chatForm" onsubmit="handleMainSubmit(event)" class="flex items-center space-x-2">
-            
-            <!-- Tombol Lampiran Foto (+) -->
             <label class="p-2.5 rounded-full bg-[#111b21] hover:bg-slate-800 text-emerald-400 cursor-pointer border border-slate-700/50 flex items-center justify-center transition-all shadow-inner">
                 <input type="file" id="fotoInput" accept="image/*" onchange="handleFileSelected(this)" class="hidden">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -80,14 +104,12 @@
                 </svg>
             </label>
 
-            <!-- Kolom Input Teks -->
             <div class="relative flex-1">
                 <input type="text" id="mainInput" required placeholder="Ketik pesan..." 
                     class="w-full bg-[#111b21] text-slate-100 placeholder-slate-500 text-xs rounded-full px-4 py-3 focus:outline-none border border-slate-700/50 pr-16">
                 <span id="fileBadge" class="hidden absolute right-3 top-2.5 text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded-full font-bold">Foto OK</span>
             </div>
 
-            <!-- Tombol Kirim (Send) -->
             <button type="submit" id="btnSend" class="w-11 h-11 rounded-full bg-[#00a884] hover:bg-[#008f72] text-slate-950 flex items-center justify-center shadow-md transition-all active:scale-95">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-950 translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
@@ -96,9 +118,8 @@
         </form>
     </footer>
 
-    <!-- JavaScript Logic -->
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwhfo6WReze71vRmLBAspQd4FBq6PvKdaENUsagKrbuXoAOazOjc9dxObZ2ZjfIPbHp/exec"; // Ganti dengan Deployment URL Google Apps Script lu
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwhfo6WReze71vRmLBAspQd4FBq6PvKdaENUsagKrbuXoAOazOjc9dxObZ2ZjfIPbHp/exec"; 
         
         const urlParams = new URLSearchParams(window.location.search);
         const STATION_ID = (urlParams.get('station') || 'T1').toUpperCase();
@@ -122,13 +143,15 @@
                     activeSessionData.angkaAwal = result.angkaAwal;
                     activeSessionData.token = result.token || "Penghuni";
                     
-                    document.getElementById('botGreetingText').innerHTML = `⚡ <b>Station ${STATION_ID} Sedang Digunakan</b><br>Unit: <b>${activeSessionData.token}</b><br>Stand Awal: <b>${result.angkaAwal} kWh</b><br><br>Silakan masukkan <b>Angka kWh Akhir</b> atau lampirkan foto meteran akhir, lalu klik kirim.`;
+                    document.getElementById('botGreetingText').innerHTML = `⚡ <b>Station ${STATION_ID} Sedang Digunakan</b><br>Unit: <b>${activeSessionData.token}</b><br>Stand Awal: <b>${result.angkaAwal} kWh</b><br><br>Silakan masukkan <b>Angka kWh Akhir</b> dari foto meteran, lalu klik kirim.`;
                     document.getElementById('mainInput').placeholder = "Masukkan Angka kWh Akhir...";
                     document.getElementById('mainInput').type = "number";
                     document.getElementById('mainInput').step = "0.1";
                 } else {
                     appState = 'CHECKIN';
-                    document.getElementById('botGreetingText').innerHTML = `Station <b>${STATION_ID}</b> siap digunakan.<br>Silakan ketik <b>Nomor Unit / Token</b> Anda dan lampirkan foto kWh awal melalui tombol <b>+</b> di bawah.`;
+                    activeSessionData.angkaAwal = result.lastAngka || 0;
+                    
+                    document.getElementById('botGreetingText').innerHTML = `Station <b>${STATION_ID}</b> siap digunakan.<br>Stand Awal Terdeteksi: <b>${activeSessionData.angkaAwal} kWh</b><br><br>Silakan ketik <b>Nomor Unit / Token</b> Anda dan lampirkan foto kWh awal melalui tombol <b>+</b> di bawah.`;
                     document.getElementById('mainInput').placeholder = "Ketik Nomor Unit / Token...";
                 }
             } catch (error) {
@@ -146,7 +169,7 @@
                 reader.onload = function(e) {
                     selectedFileBase64 = e.target.result.split(',')[1];
                     document.getElementById('fileBadge').classList.remove('hidden');
-                    appendBotBubble(`📎 Foto <b>"${file.name}"</b> berhasil dilampirkan. Silakan lengkapi teks dan ketuk tombol kirim.`);
+                    appendBotBubble(`📎 Foto <b>"${file.name}"</b> berhasil dilampirkan. Silakan lengkapi teks dan kirim.`);
                 };
                 reader.readAsDataURL(file);
             }
@@ -169,7 +192,7 @@
 
             btnSend.disabled = true;
             document.getElementById('mainInput').disabled = true;
-            appendBotBubble("⏳ Mengirim laporan dan memproses data...");
+            appendBotBubble("⏳ Mengirim laporan dan memproses data ke server...");
 
             let payload = {};
             if (appState === 'CHECKIN') {
@@ -177,6 +200,7 @@
                     action: "checkin",
                     stationId: STATION_ID,
                     token: inputValue,
+                    angkaAwal: activeSessionData.angkaAwal,
                     fotoName: selectedFileMeta.name,
                     fotoMime: selectedFileMeta.type,
                     fotoBase64: selectedFileBase64
@@ -208,13 +232,22 @@
 
                 if (result.status === "SUCCESS") {
                     if (appState === 'CHECKIN') {
-                        appendBotBubble(`✅ <b>CHECK-IN BERHASIL!</b><br>Station: ${STATION_ID}<br>Unit: ${inputValue}<br>Sesi pengecasan telah aktif.`);
+                        appendBotBubble(`✅ <b>CHECK-IN BERHASIL!</b><br>Station: ${STATION_ID}<br>Unit: ${inputValue}<br>Stand Awal Tercatat: ${activeSessionData.angkaAwal} kWh<br><br><i>Sesi pengecasan dimulai. Batas waktu: 1 Jam.</i>`);
+                        setTimeout(() => location.reload(), 4000);
                     } else {
                         const totalKwh = result.totalKwh || 0;
-                        const estTarif = Math.round(totalKwh * 2500);
-                        appendBotBubble(`🏁 <b>*LAPORAN LISTRIK SUKSES*</b><br><br>🆔 Trx: <b>*TRX-${Math.floor(Math.random()*90000+10000)}*</b><br>📍 Lokasi: <b>${STATION_ID}</b><br>🔢 Stand Awal: ${activeSessionData.angkaAwal}<br>🔢 Stand Akhir: ${inputValue}<br>📊 Pakai: <b>${totalKwh.toFixed(2)} kWh</b><br>💰 *Estimasi Biaya: Rp ${estTarif.toLocaleString('id-ID')}*<br><br><i>Sesi selesai dan ditutup.</i>`);
+                        const estTarif = Math.round(totalKwh * 2500); 
+                        
+                        appendBotBubble(`🏁 <b>LAPORAN PENGECASAN SELESAI</b><br><br>` +
+                            `📍 Lokasi: <b>${STATION_ID}</b><br>` +
+                            `🆔 Unit/Token: <b>${activeSessionData.token}</b><br>` +
+                            `🔢 Stand Awal: <b>${result.angkaAwal} kWh</b><br>` +
+                            `🔢 Stand Akhir: <b>${result.angkaAkhir} kWh</b><br>` +
+                            `📊 <b>Total Pemakaian: ${totalKwh.toFixed(2)} kWh</b><br>` +
+                            `💰 <b>Estimasi Biaya: Rp ${estTarif.toLocaleString('id-ID')}</b><br><br>` +
+                            `<i>Data berhasil direkap ke sistem.</i><br>` +
+                            `<button onclick="location.reload()" class="mt-2 bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow transition-all">Selesai / Refresh Sekarang</button>`);
                     }
-                    setTimeout(() => location.reload(), 5000);
                 } else {
                     appendBotBubble(`❌ Gagal: ${result.message}`);
                     btnSend.disabled = false;
@@ -224,6 +257,63 @@
                 appendBotBubble("❌ Terjadi kesalahan jaringan ke server.");
                 btnSend.disabled = false;
                 document.getElementById('mainInput').disabled = false;
+            }
+        }
+
+        // Script Modal Dashboard Melayang
+        function openDashboardModal() {
+            document.getElementById('dashboardModal').classList.remove('hidden');
+        }
+        function closeDashboardModal() {
+            document.getElementById('dashboardModal').classList.add('hidden');
+        }
+
+        async function fetchUnitHistory() {
+            const unitQuery = document.getElementById('inputSearchUnit').value.trim();
+            const resultContainer = document.getElementById('dashboardResult');
+
+            if (!unitQuery) {
+                resultContainer.innerHTML = `<p class="text-red-400 text-center">Masukkan nomor unit terlebih dahulu!</p>`;
+                return;
+            }
+
+            resultContainer.innerHTML = `<p class="text-slate-400 text-center py-4">⏳ Mengambil data rekap...</p>`;
+
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getHistory&unitQuery=${encodeURIComponent(unitQuery)}`);
+                const res = await response.json();
+
+                if (res.status === "SUCCESS_HISTORY") {
+                    if (res.data.length === 0) {
+                        resultContainer.innerHTML = `<p class="text-yellow-400 text-center py-4">Tidak ditemukan riwayat untuk unit <b>${unitQuery}</b>.</p>`;
+                        return;
+                    }
+
+                    let html = `<p class="text-[11px] text-slate-400 mb-2">Menemukan <b>${res.data.length}</b> riwayat untuk unit: <b class="text-emerald-400">${unitQuery}</b></p>`;
+                    
+                    res.data.forEach(item => {
+                        const totalBiaya = Math.round((item.totalKwh || 0) * 2500);
+                        html += `
+                            <div class="bg-[#111b21] p-3 rounded-xl border border-slate-700/50 space-y-1">
+                                <div class="flex justify-between font-bold text-emerald-400">
+                                    <span>📍 Station ${item.station}</span>
+                                    <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-300">${item.status}</span>
+                                </div>
+                                <div class="grid grid-cols-2 text-[11px] text-slate-300 gap-1 pt-1">
+                                    <div>Waktu: ${item.timestamp}</div>
+                                    <div>Total: <b>${item.totalKwh} kWh</b></div>
+                                    <div>Stand: ${item.awal} ➔ ${item.akhir}</div>
+                                    <div>Biaya: <b class="text-emerald-300">Rp ${totalBiaya.toLocaleString('id-ID')}</b></div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    resultContainer.innerHTML = html;
+                } else {
+                    resultContainer.innerHTML = `<p class="text-red-400 text-center">Gagal memuat rekap data.</p>`;
+                }
+            } catch (err) {
+                resultContainer.innerHTML = `<p class="text-red-400 text-center">Terjadi kesalahan koneksi server.</p>`;
             }
         }
 
