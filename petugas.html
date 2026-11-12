@@ -12,13 +12,15 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col p-4 max-w-4xl mx-auto space-y-6">
 
-    <!-- Header -->
+<!-- Header -->
     <header class="bg-slate-800 border border-slate-700 p-4 rounded-2xl flex items-center justify-between shadow-xl">
         <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xl border border-emerald-500/30">⚡</div>
+            <!-- Logo Gambar -->
+            <img src="logo.png" alt="Logo Riverside" class="w-10 h-10 rounded-xl object-cover border border-emerald-500/30">
+
             <div>
-                <h1 class="font-bold text-sm tracking-wide text-white">COMMAND CENTER PETUGAS</h1>
-                <p class="text-xs text-slate-400">Monitoring Sesi Aktif EV Charging • Real-time</p>
+                <h1 class="font-bold text-sm tracking-wide text-white">RIVERSIDE APARTMENT</h1>
+                <p class="text-xs text-slate-400">Command Center EV Charging • Petugas</p>
             </div>
         </div>
         <button onclick="loadAdminData()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-xl shadow transition-all active:scale-95 flex items-center gap-1.5">
@@ -48,16 +50,22 @@
             setInterval(loadAdminData, 10000); // Auto refresh tiap 10 detik
         });
 
-        async function loadAdminData() {
+ async function loadAdminData() {
             try {
-                const response = await fetch(`${SCRIPT_URL}?action=getAdminDashboard`);
+                // Tambahkan mode 'cors' dan pastikan mengikuti redirect dengan benar
+                const response = await fetch(`${SCRIPT_URL}?action=getAdminDashboard`, {
+                    method: 'GET',
+                    redirect: 'follow' 
+                });
                 const res = await response.json();
 
                 if (res.status === "SUCCESS_ADMIN") {
                     renderStations(res.sessions);
+                } else {
+                    console.error("Format data dari server tidak valid", res);
                 }
             } catch (err) {
-                console.error("Gagal memuat data admin");
+                console.error("Gagal memuat data admin:", err);
             }
         }
 
