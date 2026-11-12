@@ -95,30 +95,46 @@
     </div>
 
     <!-- Footer Input Bar -->
-    <footer class="bg-[#202c33] py-2.5 px-3 border-t border-slate-800 fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto">
-        <form id="chatForm" onsubmit="handleMainSubmit(event)" class="flex items-center space-x-2">
-            <label class="p-2.5 rounded-full bg-[#111b21] hover:bg-slate-800 text-emerald-400 cursor-pointer border border-slate-700/50 flex items-center justify-center transition-all shadow-inner">
-                <input type="file" id="fotoInput" accept="image/*" onchange="handleFileSelected(this)" class="hidden">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-            </label>
-
-            <div class="relative flex-1">
-                <input type="text" id="mainInput" required placeholder="Ketik pesan..." 
-                    class="w-full bg-[#111b21] text-slate-100 placeholder-slate-500 text-xs rounded-full px-4 py-3 focus:outline-none border border-slate-700/50 pr-16">
-                <span id="fileBadge" class="hidden absolute right-3 top-2.5 text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded-full font-bold">Foto OK</span>
+<footer class="bg-[#202c33] py-2.5 px-3 border-t border-slate-800 fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto">
+        <form id="chatForm" onsubmit="handleMainSubmit(event)" class="flex flex-col space-y-2">
+            
+            <!-- Opsi Tambahan Pilihan Durasi (Hanya muncul saat status CHECKIN) -->
+            <div id="durationWrapper" class="hidden flex items-center justify-between bg-[#111b21] px-3 py-1.5 rounded-lg border border-slate-700/50 text-xs">
+                <span class="text-slate-300 font-medium">⏱️ Estimasi Charging:</span>
+                <select id="selectDuration" class="bg-[#202c33] text-emerald-400 font-bold px-2 py-1 rounded border border-slate-600 focus:outline-none">
+                    <option value="30">30 Menit (Kilat)</option>
+                    <option value="60" selected>1 Jam (Standar)</option>
+                    <option value="120">2 Jam (Penuh)</option>
+                    <option value="180">3 Jam (Long)</option>
+                </select>
             </div>
 
-            <button type="submit" id="btnSend" class="w-11 h-11 rounded-full bg-[#00a884] hover:bg-[#008f72] text-slate-950 flex items-center justify-center shadow-md transition-all active:scale-95">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-950 translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-                </svg>
-            </button>
+            <div class="flex items-center space-x-2">
+                <!-- Tombol Lampiran Foto (+) -->
+                <label class="p-2.5 rounded-full bg-[#111b21] hover:bg-slate-800 text-emerald-400 cursor-pointer border border-slate-700/50 flex items-center justify-center transition-all shadow-inner">
+                    <input type="file" id="fotoInput" accept="image/*" onchange="handleFileSelected(this)" class="hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                </label>
+
+                <!-- Kolom Input Teks -->
+                <div class="relative flex-1">
+                    <input type="text" id="mainInput" required placeholder="Ketik pesan..." 
+                        class="w-full bg-[#111b21] text-slate-100 placeholder-slate-500 text-xs rounded-full px-4 py-3 focus:outline-none border border-slate-700/50 pr-16">
+                    <span id="fileBadge" class="hidden absolute right-3 top-2.5 text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded-full font-bold">Foto OK</span>
+                </div>
+
+                <!-- Tombol Kirim (Send) -->
+                <button type="submit" id="btnSend" class="w-11 h-11 rounded-full bg-[#00a884] hover:bg-[#008f72] text-slate-950 flex items-center justify-center shadow-md transition-all active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-950 translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                    </svg>
+                </button>
+            </div>
         </form>
     </footer>
-
-    <script>
+<script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwhfo6WReze71vRmLBAspQd4FBq6PvKdaENUsagKrbuXoAOazOjc9dxObZ2ZjfIPbHp/exec"; 
         
         const urlParams = new URLSearchParams(window.location.search);
@@ -128,6 +144,7 @@
         let activeSessionData = { angkaAwal: 0, token: '' };
         let selectedFileBase64 = null;
         let selectedFileMeta = { name: '', type: '' };
+        let countdownInterval = null; // Variabel pengelola timer
 
         document.getElementById('currentTime').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -151,7 +168,11 @@
                     appState = 'CHECKIN';
                     activeSessionData.angkaAwal = result.lastAngka || 0;
                     
-                    document.getElementById('botGreetingText').innerHTML = `Station <b>${STATION_ID}</b> siap digunakan.<br>Stand Awal Terdeteksi: <b>${activeSessionData.angkaAwal} kWh</b><br><br>Silakan ketik <b>Nomor Unit / Token</b> Anda dan lampirkan foto kWh awal melalui tombol <b>+</b> di bawah.`;
+                    // Munculkan pilihan durasi khusus saat mode checkin (pastikan elemen durationWrapper ada di HTML form)
+                    const durationWrapper = document.getElementById('durationWrapper');
+                    if (durationWrapper) durationWrapper.classList.remove('hidden');
+                    
+                    document.getElementById('botGreetingText').innerHTML = `Station <b>${STATION_ID}</b> siap digunakan.<br>Stand Awal Terdeteksi: <b>${activeSessionData.angkaAwal} kWh</b><br><br>Silakan pilih estimasi durasi, ketik <b>Nomor Unit / Token</b>, dan lampirkan foto kWh awal.`;
                     document.getElementById('mainInput').placeholder = "Ketik Nomor Unit / Token...";
                 }
             } catch (error) {
@@ -195,12 +216,18 @@
             appendBotBubble("⏳ Mengirim laporan dan memproses data ke server...");
 
             let payload = {};
+            let selectedDurationMinutes = 60;
+
             if (appState === 'CHECKIN') {
+                const selectEl = document.getElementById('selectDuration');
+                selectedDurationMinutes = selectEl ? parseInt(selectEl.value) || 60 : 60;
+                
                 payload = {
                     action: "checkin",
                     stationId: STATION_ID,
                     token: inputValue,
                     angkaAwal: activeSessionData.angkaAwal,
+                    durasiMenit: selectedDurationMinutes,
                     fotoName: selectedFileMeta.name,
                     fotoMime: selectedFileMeta.type,
                     fotoBase64: selectedFileBase64
@@ -232,8 +259,10 @@
 
                 if (result.status === "SUCCESS") {
                     if (appState === 'CHECKIN') {
-                        appendBotBubble(`✅ <b>CHECK-IN BERHASIL!</b><br>Station: ${STATION_ID}<br>Unit: ${inputValue}<br>Stand Awal Tercatat: ${activeSessionData.angkaAwal} kWh<br><br><i>Sesi pengecasan dimulai. Batas waktu: 1 Jam.</i>`);
-                        setTimeout(() => location.reload(), 4000);
+                        appendBotBubble(`✅ <b>CHECK-IN BERHASIL!</b><br>Station: ${STATION_ID}<br>Unit: ${inputValue}<br>Durasi Pilihan: <b>${selectedDurationMinutes} Menit</b><br>Stand Awal: ${activeSessionData.angkaAwal} kWh<br><br><span id="reminderStatus" class="text-emerald-400 font-bold">⏱️ Menghitung waktu sesi...</span>`);
+                        
+                        // Mulai jalankan countdown timer dinamis di frontend
+                        startFrontendReminder(new Date().getTime(), selectedDurationMinutes);
                     } else {
                         const totalKwh = result.totalKwh || 0;
                         const estTarif = Math.round(totalKwh * 2500); 
@@ -257,6 +286,39 @@
                 appendBotBubble("❌ Terjadi kesalahan jaringan ke server.");
                 btnSend.disabled = false;
                 document.getElementById('mainInput').disabled = false;
+            }
+        }
+
+        // Fungsi Countdown Timer & Reminder Frontend
+        function startFrontendReminder(startTimeMs, durationMinutes) {
+            const targetTime = startTimeMs + (durationMinutes * 60 * 1000);
+            
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            countdownInterval = setInterval(() => {
+                const now = new Date().getTime();
+                const timeLeft = targetTime - now;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    triggerOvertimeAlert();
+                } else {
+                    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+                    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                    
+                    const reminderEl = document.getElementById('reminderStatus');
+                    if (reminderEl) {
+                        reminderEl.innerText = `⏱️ Sisa Waktu Sesi: ${hours > 0 ? hours + 'j ' : ''}${minutes}m ${seconds}s`;
+                    }
+                }
+            }, 1000);
+        }
+
+        function triggerOvertimeAlert() {
+            appendBotBubble(`🚨 <b>PERINGATAN WAKTU HABIS!</b><br>Estimasi durasi pengecasan yang Anda pilih telah selesai. Harap segera turun untuk mencabut kendaraan dan melakukan <i>Checkout</i>!`);
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200, 100, 500]);
             }
         }
 
