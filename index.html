@@ -134,16 +134,19 @@
     <footer class="bg-[#202c33] py-2.5 px-3 border-t border-slate-800 fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto">
         <form id="chatForm" onsubmit="handleMainSubmit(event)" class="flex flex-col space-y-2">
             
-            <div id="durationWrapper" class="hidden flex items-center justify-between bg-[#111b21] px-3 py-1.5 rounded-lg border border-slate-700/50 text-xs">
-                <span class="text-slate-300 font-medium">⏱️ Estimasi Charging:</span>
-                <select id="selectDuration" class="bg-[#202c33] text-emerald-400 font-bold px-2 py-1 rounded border border-slate-600 focus:outline-none">
-                    <option value="30">30 Menit (Kilat)</option>
-                    <option value="60" selected>1 Jam (Standar)</option>
-                    <option value="120">2 Jam (Penuh)</option>
-                    <option value="180">3 Jam (Long)</option>
-                </select>
-            </div>
-
+<!-- Opsi Tambahan Pilihan Durasi (Diperbarui dengan 5, 7, dan 9 Jam) -->
+<div id="durationWrapper" class="hidden flex items-center justify-between bg-[#111b21] px-3 py-1.5 rounded-lg border border-slate-700/50 text-xs">
+    <span class="text-slate-300 font-medium">⏱️ Estimasi Charging:</span>
+    <select id="selectDuration" class="bg-[#202c33] text-emerald-400 font-bold px-2 py-1 rounded border border-slate-600 focus:outline-none">
+        <option value="30">30 Menit (Kilat)</option>
+        <option value="60" selected>1 Jam (Standar)</option>
+        <option value="120">2 Jam (Penuh)</option>
+        <option value="180">3 Jam (Long)</option>
+        <option value="300">5 Jam (Panjang)</option>
+        <option value="420">7 Jam (Malam)</option>
+        <option value="540">9 Jam (Full Sehari)</option>
+    </select>
+</div>
             <div class="flex items-center space-x-2">
                 <label class="p-2.5 rounded-full bg-[#111b21] hover:bg-slate-800 text-emerald-400 cursor-pointer border border-slate-700/50 flex items-center justify-center transition-all shadow-inner">
                     <input type="file" id="fotoInput" accept="image/*" onchange="handleFileSelected(this)" class="hidden">
@@ -483,14 +486,14 @@ let fotoBtn = (item.fotoUrl && item.fotoUrl.length > 10) ? `
             resultContainer.innerHTML = htmlContent;
         }
 
-        function appendBotBubble(htmlText) {
+function appendBotBubble(htmlText) {
             const container = document.getElementById('chatContainer');
             const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
             const bubbleHTML = `
                 <div class="flex items-end space-x-2 fade-in">
                     <div class="w-7 h-7 rounded-full bg-emerald-700 flex items-center justify-center overflow-hidden mb-1 shadow text-white font-bold text-xs">
-                        <img src="sobari.jpeg" alt="Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentNode.innerHTML='⚡';">
+                        <img src="sobari.jpeg" alt="Logo" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentNode.innerHTML='🏢';">
                     </div>
                     <div class="bg-[#202c33] text-slate-100 p-3.5 rounded-2xl rounded-bl-sm max-w-[88%] text-xs shadow space-y-1.5 border border-slate-700/50">
                         <p>${htmlText}</p>
