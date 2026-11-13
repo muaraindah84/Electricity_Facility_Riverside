@@ -18,11 +18,14 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950">
 
-    <!-- Header -->
+<!-- Header -->
     <header class="bg-[#005c4b] text-white py-2.5 px-4 sticky top-0 z-50 shadow-lg flex items-center justify-between border-b border-emerald-900/30">
         <div class="flex items-center space-x-3">
             <div class="relative">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center font-bold text-lg shadow-inner border border-emerald-400/40">⚡</div>
+                <!-- LOGO BARU: Bisa diganti emoji atau tag <img src="URL_LOGO_LU"> -->
+                <div id="appLogo" class="w-10 h-10 rounded-full bg-emerald-800 flex items-center justify-center overflow-hidden shadow-inner border border-emerald-400/40">
+    <img src="Akal Studio.jpg" alt="Logo" class="w-full h-full object-cover">
+                </div>
                 <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-[#005c4b] rounded-full animate-pulse"></span>
             </div>
             <div>
@@ -36,7 +39,6 @@
                 </p>
             </div>
         </div>
-
         <a href="https://wa.me/6285122900879?text=Halo%20Admin%20Sobari,%20saya%20butuh%20bantuan%20darurat%20di%20Charging%20Station." 
            target="_blank" 
            title="Hubungi Petugas / Security"
@@ -341,12 +343,20 @@
             if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
         }
 
-        // Script Modal Dashboard & Zoom Foto
+
+// Script Modal Dashboard & Zoom Foto (Diperbarui agar Footer Otomatis Sembunyi)
         function openDashboardModal() {
             document.getElementById('dashboardModal').classList.remove('hidden');
+            // Sembunyikan footer chat supaya modal bersih dan lega
+            const chatFooter = document.querySelector('footer');
+            if (chatFooter) chatFooter.classList.add('hidden');
         }
+
         function closeDashboardModal() {
             document.getElementById('dashboardModal').classList.add('hidden');
+            // Munculkan kembali footer chat saat modal ditutup
+            const chatFooter = document.querySelector('footer');
+            if (chatFooter) chatFooter.classList.remove('hidden');
         }
         function bukaZoomFoto(urlFoto) {
             document.getElementById("imgZoomPreview").src = urlFoto;
@@ -444,18 +454,21 @@
             resultContainer.innerHTML = htmlContent;
         }
 
-        function appendBotBubble(htmlText) {
+function appendBotBubble(htmlText) {
             const container = document.getElementById('chatContainer');
             const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
             const bubbleHTML = `
                 <div class="flex items-end space-x-2 fade-in">
-                    <div class="w-7 h-7 rounded-full bg-emerald-700 flex items-center justify-center text-xs font-bold text-white mb-1 shadow">⚡</div>
+                    <div class="w-7 h-7 rounded-full bg-emerald-700 flex items-center justify-center overflow-hidden mb-1 shadow">
+                        <img src="Akal Studio.jpg" alt="Logo" class="w-full h-full object-cover">
+                    </div>
                     <div class="bg-[#202c33] text-slate-100 p-3.5 rounded-2xl rounded-bl-sm max-w-[88%] text-xs shadow space-y-1.5 border border-slate-700/50">
                         <p>${htmlText}</p>
                         <span class="text-[10px] text-slate-400 block text-right">${timeNow}</span>
                     </div>
                 </div>
+         
             `;
             container.insertAdjacentHTML('beforeend', bubbleHTML);
             container.scrollTop = container.scrollHeight;
