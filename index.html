@@ -48,7 +48,7 @@
     </header>
 
     <!-- Chat Container -->
-    <main id="chatContainer" class="flex-1 wa-chat-bg p-4 flex flex-col justify-end max-w-md w-full mx-auto space-y-3 overflow-y-auto pb-24">
+    <main id="chatContainer" class="flex-1 wa-chat-bg p-4 flex flex-col justify-end max-w-md w-full mx-auto space-y-3 overflow-y-auto pb-28">
         <div class="flex items-end space-x-2 fade-in">
             <div class="w-7 h-7 rounded-full bg-emerald-700 flex items-center justify-center text-xs font-bold text-white mb-1 shadow">⚡</div>
             <div class="bg-[#202c33] text-slate-100 p-3.5 rounded-2xl rounded-bl-sm max-w-[88%] text-xs shadow space-y-2 border border-slate-700/50">
@@ -69,51 +69,60 @@
         </svg>
     </button>
 
-<!-- Modal Dashboard Rekap Unit (Bersih & Lega) -->
-<div id="dashboardModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-[#1f2c34] border border-slate-700 w-full max-w-lg rounded-2xl p-5 text-slate-100 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
-        
-        <!-- Header Modal -->
-        <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
-            <div class="flex items-center space-x-2">
-                <span class="text-xl">📊</span>
-                <h3 class="font-bold text-sm text-emerald-400">Dashboard Rekap Pemakaian Unit</h3>
-            </div>
-            <button onclick="closeDashboardModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">&times;</button>
-        </div>
-
-        <!-- Filter Area: Input Unit & Rentang Waktu (Harian / Minggu / Bulan) -->
-        <div class="space-y-2 bg-[#111b21] p-3 rounded-xl border border-slate-700/80">
-            <div class="flex space-x-2">
-                <input type="text" id="inputSearchUnit" placeholder="No Unit / Token (Contoh: 2A)" 
-                    class="flex-1 bg-[#202c33] text-xs text-slate-100 px-3 py-2.5 rounded-lg border border-slate-600 focus:outline-none focus:border-emerald-500 uppercase">
-                <button onclick="fetchUnitHistory()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition-all shadow-md">
-                    Cari Data
-                </button>
+    <!-- Modal Dashboard Rekap Unit (Bersih & Lega) -->
+    <div id="dashboardModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#1f2c34] border border-slate-700 w-full max-w-lg rounded-2xl p-5 text-slate-100 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
+            
+            <!-- Header Modal -->
+            <div class="flex items-center justify-between border-b border-slate-700/60 pb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xl">📊</span>
+                    <h3 class="font-bold text-sm text-emerald-400">Dashboard Rekap Pemakaian Unit</h3>
+                </div>
+                <button onclick="closeDashboardModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">&times;</button>
             </div>
 
-            <!-- Filter Rentang Waktu (Dropdown / Pilihan Cepat) -->
-            <div class="flex items-center justify-between pt-1 gap-2">
-                <select id="filterRentang" onchange="filterDataRekap()" class="w-full bg-[#202c33] text-[11px] text-slate-300 px-2.5 py-2 rounded-lg border border-slate-600 focus:outline-none focus:border-emerald-500">
-                    <option value="semua">📅 Semua Riwayat</option>
-                    <option value="minggu">⚡ 7 Hari Terakhir (1 Minggu)</option>
-                    <option value="bulan">🗓️ 30 Hari Terakhir (1 Bulan)</option>
-                </select>
-            </div>
-        </div>
+            <!-- Filter Area -->
+            <div class="space-y-2 bg-[#111b21] p-3 rounded-xl border border-slate-700/80">
+                <div class="flex space-x-2">
+                    <input type="text" id="inputSearchUnit" placeholder="No Unit / Token (Contoh: 2A)" 
+                        class="flex-1 bg-[#202c33] text-xs text-slate-100 px-3 py-2.5 rounded-lg border border-slate-600 focus:outline-none focus:border-emerald-500 uppercase">
+                    <button onclick="fetchUnitHistory()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition-all shadow-md">
+                        Cari Data
+                    </button>
+                </div>
 
-        <!-- Container Hasil Rekap (Lega & Scrollable Tanpa Footer Mengganggu) -->
-        <div id="dashboardResult" class="flex-1 overflow-y-auto space-y-2.5 text-xs pr-1">
-            <p class="text-slate-400 text-center py-8">Ketik nomor unit atau token, lalu klik 'Cari Data' untuk melihat rekap.</p>
+                <!-- Filter Rentang Waktu -->
+                <div class="flex items-center justify-between pt-1 gap-2">
+                    <select id="filterRentang" onchange="filterDataRekap()" class="w-full bg-[#202c33] text-[11px] text-slate-300 px-2.5 py-2 rounded-lg border border-slate-600 focus:outline-none focus:border-emerald-500">
+                        <option value="semua">📅 Semua Riwayat</option>
+                        <option value="minggu">⚡ 7 Hari Terakhir (1 Minggu)</option>
+                        <option value="bulan">🗓️ 30 Hari Terakhir (1 Bulan)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Container Hasil Rekap -->
+            <div id="dashboardResult" class="flex-1 overflow-y-auto space-y-2.5 text-xs pr-1">
+                <p class="text-slate-400 text-center py-8">Ketik nomor unit atau token, lalu klik 'Cari Data' untuk melihat rekap.</p>
+            </div>
+            
         </div>
-        
     </div>
-</div>
+
+    <!-- Modal Zoom Preview Foto Base64 -->
+    <div id="modalZoomFoto" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 hidden p-4" onclick="tutupZoomFoto()">
+        <div class="relative max-w-sm w-full text-center" onclick="event.stopPropagation()">
+            <img id="imgZoomPreview" src="" alt="Bukti Foto Meteran" class="rounded-xl max-h-[75vh] mx-auto border border-slate-700 shadow-2xl">
+            <button onclick="tutupZoomFoto()" class="mt-4 bg-slate-800 hover:bg-slate-700 text-white text-xs px-4 py-2 rounded-lg border border-slate-600 font-semibold shadow">Tutup Gambar</button>
+        </div>
+    </div>
+
     <!-- Footer Input Bar -->
-<footer class="bg-[#202c33] py-2.5 px-3 border-t border-slate-800 fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto">
+    <footer class="bg-[#202c33] py-2.5 px-3 border-t border-slate-800 fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto">
         <form id="chatForm" onsubmit="handleMainSubmit(event)" class="flex flex-col space-y-2">
             
-            <!-- Opsi Tambahan Pilihan Durasi (Hanya muncul saat status CHECKIN) -->
+            <!-- Opsi Tambahan Pilihan Durasi -->
             <div id="durationWrapper" class="hidden flex items-center justify-between bg-[#111b21] px-3 py-1.5 rounded-lg border border-slate-700/50 text-xs">
                 <span class="text-slate-300 font-medium">⏱️ Estimasi Charging:</span>
                 <select id="selectDuration" class="bg-[#202c33] text-emerald-400 font-bold px-2 py-1 rounded border border-slate-600 focus:outline-none">
@@ -149,7 +158,8 @@
             </div>
         </form>
     </footer>
-<script>
+
+    <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZViP_65l9YXMcEIAFB5V1i242YbReg5ZtT_9e6jpnC7h0I9JkCGoZq2YGyJW1FQvA/exec"; 
         
         const urlParams = new URLSearchParams(window.location.search);
@@ -159,7 +169,8 @@
         let activeSessionData = { angkaAwal: 0, token: '' };
         let selectedFileBase64 = null;
         let selectedFileMeta = { name: '', type: '' };
-        let countdownInterval = null; // Variabel pengelola timer
+        let countdownInterval = null;
+        let cacheRiwayatData = [];
 
         document.getElementById('currentTime').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -183,7 +194,6 @@
                     appState = 'CHECKIN';
                     activeSessionData.angkaAwal = result.lastAngka || 0;
                     
-                    // Munculkan pilihan durasi khusus saat mode checkin (pastikan elemen durationWrapper ada di HTML form)
                     const durationWrapper = document.getElementById('durationWrapper');
                     if (durationWrapper) durationWrapper.classList.remove('hidden');
                     
@@ -275,8 +285,6 @@
                 if (result.status === "SUCCESS") {
                     if (appState === 'CHECKIN') {
                         appendBotBubble(`✅ <b>CHECK-IN BERHASIL!</b><br>Station: ${STATION_ID}<br>Unit: ${inputValue}<br>Durasi Pilihan: <b>${selectedDurationMinutes} Menit</b><br>Stand Awal: ${activeSessionData.angkaAwal} kWh<br><br><span id="reminderStatus" class="text-emerald-400 font-bold">⏱️ Menghitung waktu sesi...</span>`);
-                        
-                        // Mulai jalankan countdown timer dinamis di frontend
                         startFrontendReminder(new Date().getTime(), selectedDurationMinutes);
                     } else {
                         const totalKwh = result.totalKwh || 0;
@@ -304,10 +312,8 @@
             }
         }
 
-        // Fungsi Countdown Timer & Reminder Frontend
         function startFrontendReminder(startTimeMs, durationMinutes) {
             const targetTime = startTimeMs + (durationMinutes * 60 * 1000);
-            
             if (countdownInterval) clearInterval(countdownInterval);
 
             countdownInterval = setInterval(() => {
@@ -332,115 +338,112 @@
 
         function triggerOvertimeAlert() {
             appendBotBubble(`🚨 <b>PERINGATAN WAKTU HABIS!</b><br>Estimasi durasi pengecasan yang Anda pilih telah selesai. Harap segera turun untuk mencabut kendaraan dan melakukan <i>Checkout</i>!`);
-            if (navigator.vibrate) {
-                navigator.vibrate([200, 100, 200, 100, 500]);
-            }
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
         }
 
-        // Script Modal Dashboard Melayang
+        // Script Modal Dashboard & Zoom Foto
         function openDashboardModal() {
             document.getElementById('dashboardModal').classList.remove('hidden');
         }
         function closeDashboardModal() {
             document.getElementById('dashboardModal').classList.add('hidden');
         }
+        function bukaZoomFoto(urlFoto) {
+            document.getElementById("imgZoomPreview").src = urlFoto;
+            document.getElementById("modalZoomFoto").classList.remove("hidden");
+        }
+        function tutupZoomFoto() {
+            document.getElementById("modalZoomFoto").classList.add("hidden");
+        }
 
-let cacheRiwayatData = []; // Menyimpan data sementara untuk filter
+        function fetchUnitHistory() {
+            var unitQuery = document.getElementById("inputSearchUnit").value.trim();
+            var resultContainer = document.getElementById("dashboardResult");
+            
+            if (!unitQuery) {
+                resultContainer.innerHTML = `<p class="text-amber-400 text-center py-4">Masukkan nomor unit atau token terlebih dahulu!</p>`;
+                return;
+            }
 
-function fetchUnitHistory() {
-  var unitQuery = document.getElementById("inputSearchUnit").value.trim();
-  var resultContainer = document.getElementById("dashboardResult");
-  
-  if (!unitQuery) {
-    resultContainer.innerHTML = `<p class="text-amber-400 text-center py-4">Masukkan nomor unit atau token terlebih dahulu!</p>";
-    return;
-  }
+            resultContainer.innerHTML = `<p class="text-slate-400 text-center py-4">Memuat data rekap...</p>`;
 
-  resultContainer.innerHTML = `<p class="text-slate-400 text-center py-4">Memuat data rekap...</p>`;
+            fetch(`${SCRIPT_URL}?action=getHistory&unitQuery=${encodeURIComponent(unitQuery)}`)
+                .then(response => response.json())
+                .then(res => {
+                    if (res.status === "SUCCESS_HISTORY" && res.data.length > 0) {
+                        cacheRiwayatData = res.data;
+                        filterDataRekap();
+                    } else {
+                        cacheRiwayatData = [];
+                        resultContainer.innerHTML = `<p class="text-slate-400 text-center py-6">Tidak ada riwayat ditemukan untuk unit tersebut.</p>`;
+                    }
+                })
+                .catch(err => {
+                    resultContainer.innerHTML = `<p class="text-red-400 text-center py-6">Gagal memuat data rekap.</p>`;
+                });
+        }
 
-  var SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZViP_65l9YXMcEIAFB5V1i242YbReg5ZtT_9e6jpnC7h0I9JkCGoZq2YGyJW1FQvA/exec"; 
+        function filterDataRekap() {
+            var resultContainer = document.getElementById("dashboardResult");
+            var pilihanFilter = document.getElementById("filterRentang").value;
+            
+            if (cacheRiwayatData.length === 0) return;
 
-  fetch(`${SCRIPT_URL}?action=getHistory&unitQuery=${encodeURIComponent(unitQuery)}`)
-    .then(response => response.json())
-    .then(res => {
-      if (res.status === "SUCCESS_HISTORY" && res.data.length > 0) {
-        cacheRiwayatData = res.data; // Simpan di cache
-        filterDataRekap(); // Render berdasarkan pilihan filter
-      } else {
-        cacheRiwayatData = [];
-        resultContainer.innerHTML = `<p class="text-slate-400 text-center py-6">Tidak ada riwayat ditemukan untuk unit tersebut.</p>`;
-      }
-    })
-    .catch(err => {
-      resultContainer.innerHTML = `<p class="text-red-400 text-center py-6">Gagal memuat data rekap.</p>`;
-    });
-}
+            let filteredData = cacheRiwayatData.filter(item => {
+                if (!item.timestamp || item.timestamp === "-") return true;
+                
+                let parts = item.timestamp.split(" ")[0].split("/");
+                let tglItem = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+                let sekarang = new Date();
+                let selisihHari = (sekarang - tglItem) / (1000 * 60 * 60 * 24);
 
-// Fungsi Filter Rentang Waktu (Semua / Minggu / Bulan)
-function filterDataRekap() {
-  var resultContainer = document.getElementById("dashboardResult");
-  var pilihanFilter = document.getElementById("filterRentang").value;
-  
-  if (cacheRiwayatData.length === 0) return;
+                if (pilihanFilter === "minggu") return selisihHari <= 7;
+                if (pilihanFilter === "bulan") return selisihHari <= 30;
+                return true;
+            });
 
-  let filteredData = cacheRiwayatData.filter(item => {
-    if (!item.timestamp || item.timestamp === "-") return true;
-    
-    // Parse format tanggal "DD/MM/YYYY HH:mm" dari Apps Script
-    let parts = item.timestamp.split(" ")[0].split("/");
-    let tglItem = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-    let sekarang = new Date();
-    let selisihHari = (sekarang - tglItem) / (1000 * 60 * 60 * 24);
+            if (filteredData.length === 0) {
+                resultContainer.innerHTML = `<p class="text-slate-400 text-center py-6">Tidak ada riwayat pada rentang waktu tersebut.</p>`;
+                return;
+            }
 
-    if (pilihanFilter === "minggu") {
-      return selisihHari <= 7;
-    } else if (pilihanFilter === "bulan") {
-      return selisihHari <= 30;
-    }
-    return true; // "semua"
-  });
+            let htmlContent = `<p class="text-emerald-400 text-[11px] mb-1 font-semibold">Menampilkan ${filteredData.length} transaksi:</p>`;
+            const tarifPerKwh = 2500; 
 
-  if (filteredData.length === 0) {
-    resultContainer.innerHTML = `<p class="text-slate-400 text-center py-6">Tidak ada riwayat pada rentang waktu tersebut.</p>`;
-    return;
-  }
+            filteredData.forEach(item => {
+                let totalKwh = parseFloat(item.totalKwh) || 0;
+                let totalBiaya = totalKwh * tarifPerKwh;
+                
+                let fotoBtn = item.fotoUrl ? `
+                    <button onclick="bukaZoomFoto('${item.fotoUrl}')" class="bg-slate-700 hover:bg-slate-600 text-emerald-400 border border-emerald-500/30 text-[10px] px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-semibold">
+                        📷 Lihat Foto
+                    </button>` : `<span class="text-[10px] text-slate-500">Tanpa Foto</span>`;
 
-  let htmlContent = `<p class="text-emerald-400 text-[11px] mb-1 font-semibold">Menampilkan ${filteredData.length} transaksi:</p>`;
-  const tarifPerKwh = 2500; // Sesuaikan tarif per kWh
+                htmlContent += `
+                    <div class="bg-[#111b21] border border-slate-700/80 rounded-xl p-3 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/50">📍 ${item.station}</span>
+                            <span class="text-[10px] px-2 py-0.5 rounded font-semibold ${item.status === 'Closed' ? 'bg-slate-800 text-slate-300 border border-slate-700' : 'bg-amber-950 text-amber-400'}">${item.status}</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-1 text-slate-300 pt-1">
+                            <div><span class="text-slate-500">Waktu:</span> ${item.timestamp}</div>
+                            <div><span class="text-slate-500">Total:</span> <b class="text-emerald-400">${totalKwh.toFixed(2)} kWh</b></div>
+                            <div><span class="text-slate-500">Stand:</span> ${item.awal} ➔ ${item.akhir || 'Proses'}</div>
+                            <div><span class="text-slate-500">Biaya:</span> <b class="text-amber-400">Rp ${totalBiaya.toLocaleString('id-ID')}</b></div>
+                        </div>
 
-  filteredData.forEach(item => {
-    let totalKwh = parseFloat(item.totalKwh) || 0;
-    let totalBiaya = totalKwh * tarifPerKwh;
-    
-    let fotoBtn = item.fotoUrl ? `
-      <button onclick="bukaZoomFoto('${item.fotoUrl}')" class="bg-slate-700 hover:bg-slate-600 text-emerald-400 border border-emerald-500/30 text-[10px] px-2.5 py-1 rounded-md transition-all flex items-center gap-1 font-semibold">
-        📷 Lihat Foto
-      </button>` : `<span class="text-[10px] text-slate-500">Tanpa Foto</span>`;
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                            <span class="text-slate-500 text-[10px]">Bukti Meteran:</span>
+                            ${fotoBtn}
+                        </div>
+                    </div>
+                `;
+            });
 
-    htmlContent += `
-      <div class="bg-[#111b21] border border-slate-700/80 rounded-xl p-3 space-y-2">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/50">📍 ${item.station}</span>
-          <span class="text-[10px] px-2 py-0.5 rounded font-semibold ${item.status === 'Closed' ? 'bg-slate-800 text-slate-300 border border-slate-700' : 'bg-amber-950 text-amber-400'}">${item.status}</span>
-        </div>
-        
-        <div class="grid grid-cols-2 gap-1 text-slate-300 pt-1">
-          <div><span class="text-slate-500">Waktu:</span> ${item.timestamp}</div>
-          <div><span class="text-slate-500">Total:</span> <b class="text-emerald-400">${totalKwh.toFixed(2)} kWh</b></div>
-          <div><span class="text-slate-500">Stand:</span> ${item.awal} ➔ ${item.akhir || 'Proses'}</div>
-          <div><span class="text-slate-500">Biaya:</span> <b class="text-amber-400">Rp ${totalBiaya.toLocaleString('id-ID')}</b></div>
-        </div>
+            resultContainer.innerHTML = htmlContent;
+        }
 
-        <div class="flex items-center justify-between pt-2 border-t border-slate-800">
-          <span class="text-slate-500 text-[10px]">Bukti Meteran:</span>
-          ${fotoBtn}
-        </div>
-      </div>
-    `;
-  });
-
-  resultContainer.innerHTML = htmlContent;
-}
         function appendBotBubble(htmlText) {
             const container = document.getElementById('chatContainer');
             const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
